@@ -13,7 +13,7 @@ pip install requests
 ## Quick start
 
 ```bash
-python main.py
+python tempmail.py
 ```
 
 ## Usage
