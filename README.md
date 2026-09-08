@@ -1,21 +1,19 @@
-# Temp Mail API (Python)
+# TempMail-API
 
-Python client for temporary email via **mob2.temp-mail.org**.
+Python client for temporary email.
 
-Create a disposable inbox, list messages, read full mail bodies, and optionally wait until a new message arrives.
-
-## Features
-
-- Create a new temporary mailbox (JWT auth)
-- List inbox messages
-- Read a full message by id
-- Poll / wait for new mail
-- List public domains (`temp-mail.io`)
+Create disposable addresses, list domains, read inbox, and log in with a token key.
 
 ## Install
 
 ```bash
 pip install requests
+```
+
+## Quick start
+
+```bash
+python main.py
 ```
 
 ## Usage
@@ -24,36 +22,44 @@ pip install requests
 from tempmail import TempMail
 
 bot = TempMail()
-bot.run()  # creates mailbox and prints inbox
-```
 
-### Create mailbox only
+# domains
+print(bot.list_domain_names())
 
-```python
-bot = TempMail()
-print(bot.create_mailbox())
-# → {"token": "...", "mailbox": "name@domain.com"}
-```
+# create mailbox (optional domain)
+bot.create_mailbox(domain="ozsaip.com")
+print(bot.mailbox, bot.token)
 
-### Wait for a message
+# inbox
+print(bot.get_messages())
 
-```python
-bot = TempMail()
-bot.create_mailbox()
-msg = bot.wait_for_message(timeout=120, interval=5, subject_contains="verify")
+# login with key
+bot2 = TempMail()
+bot2.login(token=bot.token, email=bot.mailbox)
+print(bot2.get_messages())
+
+# wait for mail
+msg = bot.wait_for_message(timeout=120, interval=5)
 print(msg)
 ```
 
-## API methods
+## Methods
 
 | Method | Description |
 |--------|-------------|
-| `create_mailbox()` | Create temp email + token |
-| `get_messages()` | List messages |
-| `get_message(id)` | Full message body |
+| `domains()` | Full domains response |
+| `list_domain_names()` | Domain names only |
+| `create_mailbox(domain=None)` | New email + token |
+| `login(token, email=None)` | Use existing key |
+| `get_messages()` | List inbox |
+| `get_message(id)` | Read one message |
 | `wait_for_message(...)` | Poll until new mail |
-| `domains()` | Public domains list |
-| `run()` | Create + show inbox |
+| `run()` | Full demo flow |
+
+## API
+
+- Primary: `https://api.internal.temp-mail.io`
+- Optional backend: `mob2.temp-mail.org` (`backend="mob2"`)
 
 ## License
 
